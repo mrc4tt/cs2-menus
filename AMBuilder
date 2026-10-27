@@ -10,7 +10,8 @@ for sdk_target in MMSPlugin.sdk_targets:
   sdk = sdk_target.sdk
   cxx = sdk_target.cxx
     
-  cxx.cxxflags += ['-Wno-invalid-offsetof', '-Wno-reorder-ctor']
+  if cxx.like('gcc'):
+    cxx.cxxflags += ['-Wno-invalid-offsetof', '-Wno-reorder-ctor']
   if cxx.target.platform == 'linux':
     cxx.defines += [
       'bswap_16=__builtin_bswap16',
@@ -22,7 +23,7 @@ for sdk_target in MMSPlugin.sdk_targets:
   binary.compiler.cxxincludes += [
     os.path.join(builder.currentSourcePath, 'funchook', 'include'),
     os.path.join(builder.sourcePath, 'include'),
-    os.path.join(builder.sourcePath, '..', 'SchemaEntity'),
+    os.path.join(builder.sourcePath, 'schemaentity'),
   ]
 
   if binary.compiler.target.platform == 'linux':
@@ -37,9 +38,23 @@ for sdk_target in MMSPlugin.sdk_targets:
       os.path.join(builder.sourcePath, 'funchook', 'lib', 'distorm.lib'),
     ]
 
-  proto_dir = os.path.join(sdk['path'], 'thirdparty', 'game_protobufs', 'csgo')
+  # The protos sit in different folders depending on the SDK layout:
+  # thirdparty/game_protobufs/csgo (alliedmodders) or common, game/shared,
+  # networksystem (mrc4tt/hl2sdk). Take each one from the first folder that has it.
+  proto_dirs = [
+    os.path.join(sdk['path'], 'thirdparty', 'game_protobufs', 'csgo'),
+    os.path.join(sdk['path'], 'common'),
+    os.path.join(sdk['path'], 'game', 'shared'),
+    os.path.join(sdk['path'], 'networksystem'),
+  ]
+  def find_proto(name):
+    for d in proto_dirs:
+      path = os.path.join(d, name)
+      if os.path.isfile(path):
+        return path
+    raise Exception('Could not find {} in the SDK'.format(name))
   proto_sources = [
-    os.path.join(proto_dir, f) for f in [
+    find_proto(f) for f in [
       'networksystem_protomessages.proto',
       'valveextensions.proto',
       'network_connection.proto',
@@ -62,12 +77,12 @@ for sdk_target in MMSPlugin.sdk_targets:
     'api_utils.cpp',
     'api_players.cpp',
     'api_layout.cpp',
-    os.path.join('..', 'SchemaEntity', 'schemasystem.cpp'),
-    os.path.join('..', 'SchemaEntity', 'module.cpp'),
-    os.path.join('..', 'SchemaEntity', 'ctimer.cpp'),
+    os.path.join('schemaentity', 'schemasystem.cpp'),
+    os.path.join('schemaentity', 'module.cpp'),
+    os.path.join('schemaentity', 'ctimer.cpp'),
   ]
 
   if cxx.target.arch == 'x86':
     binary.sources += ['sourcehook/sourcehook_hookmangen.cpp']
   nodes = builder.Add(binary)
-  MMSPlugin.binaries += [nodes]
+  MMSPlugin.binaries += [nodes]

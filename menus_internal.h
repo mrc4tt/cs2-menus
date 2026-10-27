@@ -47,7 +47,7 @@ extern int g_iCollisionRulesChanged;
 extern int g_iTeleport;
 extern int g_iRespawn;
 extern int g_iDropWeapon;
-extern int g_iOnTakeDamageAliveId;
+
 
 // ============================================================================
 

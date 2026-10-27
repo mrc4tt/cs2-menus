@@ -24,6 +24,7 @@ class CCommand;
 class CPlayer_ItemServices;
 class CEconItemView;
 class CCSPlayerController;
+struct Entity2Networkable_t;
 
 #define UTILS_INTERFACE "IUtilsApi"
 
@@ -122,12 +123,16 @@ typedef std::function<void(int iSlot, Menu& hMenu)> OnSettingsOpenCallback;
 typedef std::function<void(const char* szBack, const char* szFront, int iItem, int iSlot)> OnSettingsItemCallback;
 
 // Тип всплывающего уведомления (угловой тост)
+// windows.h (wingdi.h) defines ERROR as a macro
+#pragma push_macro("ERROR")
+#undef ERROR
 enum class NotifyType : int
 {
     SUCCESS = 0,
     WARNING = 1,
     ERROR   = 2,
 };
+#pragma pop_macro("ERROR")
 
 // Угол/место экрана, в котором показывается тост
 enum class NotifyPos : int
