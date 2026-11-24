@@ -7,7 +7,7 @@
 
 void ClientPrintFilter(CPlayerBitVec filter, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4)
 {
-	static INetworkMessageInternal *netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CUserMessageTextMsg");
+	static NetMessageInfo_t *netmsg = g_pNetworkMessages->FindNetworkMessagePartial("CUserMessageTextMsg");
 	std::unique_ptr<CNetMessagePB<CUserMessageTextMsg>> msg(netmsg->AllocateMessage()->ToPB<CUserMessageTextMsg>());
 	msg->set_dest(msg_dest);
 	msg->add_param(msg_name);

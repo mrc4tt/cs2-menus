@@ -139,7 +139,7 @@ public:
 	KHook::Return<void> OnPreFatalShutdown(const IServerGameDLL* pThis);
 	KHook::Return<void> OnUpdateWhenNotInGame(IServerGameDLL* pThis, float flFrameTime);
 	KHook::Return<void> OnServerConVarChanged(IServerGameDLL* pThis, const char *pVarName, const char *pValue);
-	KHook::Return<void> OnPostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType);
+	KHook::Return<void> OnPostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType);
 	KHook::Return<bool> OnSetClientListening(IVEngineServer2* pThis, CPlayerSlot iReceiver, CPlayerSlot iSender, bool bListen);
 
 	KHook::Return<void> OnGameFramePost(IServerGameDLL* pThis, bool simulating, bool bFirstTick, bool bLastTick);
@@ -151,7 +151,7 @@ public:
 	KHook::Return<void> OnPreFatalShutdownPost(const IServerGameDLL* pThis);
 	KHook::Return<void> OnUpdateWhenNotInGamePost(IServerGameDLL* pThis, float flFrameTime);
 	KHook::Return<void> OnServerConVarChangedPost(IServerGameDLL* pThis, const char *pVarName, const char *pValue);
-	KHook::Return<void> OnPostEventAbstractPost(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType);
+	KHook::Return<void> OnPostEventAbstractPost(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType);
 	KHook::Return<bool> OnSetClientListeningPost(IVEngineServer2* pThis, CPlayerSlot iReceiver, CPlayerSlot iSender, bool bListen);
 	KHook::Return<void> OnDispatchConCommandPost(ICvar* pThis, ConCommandRef cmd, const CCommandContext& ctx, const CCommand& args);
 	KHook::Return<bool> OnFireEventPost(IGameEventManager2* pThis, IGameEvent* pEvent, bool bDontBroadcast);
@@ -483,7 +483,7 @@ public:
 			if (item.second && !item.second->SetClientListening(iReceiver, iSender, bResult)) bResult = false;
 		return bResult;
 	}
-	void SendServerPostEvent(int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData) {
+	void SendServerPostEvent(int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData) {
 		for (auto& item : m_ServerListeners)
 			if (item.second) item.second->PostEvent(nClientCount, clients, pEvent, pData);
 	}
@@ -538,7 +538,7 @@ public:
 		for (auto& item : m_ServerListeners)
 			if (item.second) item.second->SetClientListeningPost(iReceiver, iSender, bListen);
 	}
-	void SendServerPostEventPost(int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData) {
+	void SendServerPostEventPost(int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData) {
 		for (auto& item : m_ServerListeners)
 			if (item.second) item.second->PostEventPost(nClientCount, clients, pEvent, pData);
 	}

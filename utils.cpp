@@ -152,8 +152,8 @@ static KHook::Virtual<IServerGameDLL, void, float> g_Hook_OnUpdateWhenNotInGame(
 static KHook::Virtual<IServerGameDLL, void, float> g_Hook_OnUpdateWhenNotInGamePost(&IServerGameDLL::UpdateWhenNotInGame, &g_Menus, nullptr, &Menus::OnUpdateWhenNotInGamePost);
 static KHook::Virtual<IServerGameDLL, void, const char*, const char*> g_Hook_OnServerConVarChanged(&IServerGameDLL::ServerConVarChanged, &g_Menus, &Menus::OnServerConVarChanged, nullptr);
 static KHook::Virtual<IServerGameDLL, void, const char*, const char*> g_Hook_OnServerConVarChangedPost(&IServerGameDLL::ServerConVarChanged, &g_Menus, nullptr, &Menus::OnServerConVarChangedPost);
-static KHook::Virtual<IGameEventSystem, void, CSplitScreenSlot, bool, int, const uint64*, INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t> g_Hook_OnPostEventAbstract(&IGameEventSystem::PostEventAbstract, &g_Menus, &Menus::OnPostEventAbstract, nullptr);
-static KHook::Virtual<IGameEventSystem, void, CSplitScreenSlot, bool, int, const uint64*, INetworkMessageInternal*, const CNetMessage*, unsigned long, NetChannelBufType_t> g_Hook_OnPostEventAbstractPost(&IGameEventSystem::PostEventAbstract, &g_Menus, nullptr, &Menus::OnPostEventAbstractPost);
+static KHook::Virtual<IGameEventSystem, void, CSplitScreenSlot, bool, int, const uint64*, NetMessageInfo_t*, const CNetMessage*, unsigned long, NetChannelBufType_t> g_Hook_OnPostEventAbstract(&IGameEventSystem::PostEventAbstract, &g_Menus, &Menus::OnPostEventAbstract, nullptr);
+static KHook::Virtual<IGameEventSystem, void, CSplitScreenSlot, bool, int, const uint64*, NetMessageInfo_t*, const CNetMessage*, unsigned long, NetChannelBufType_t> g_Hook_OnPostEventAbstractPost(&IGameEventSystem::PostEventAbstract, &g_Menus, nullptr, &Menus::OnPostEventAbstractPost);
 static KHook::Virtual<IVEngineServer2, bool, CPlayerSlot, CPlayerSlot, bool> g_Hook_OnSetClientListening(&IVEngineServer2::SetClientListening, &g_Menus, &Menus::OnSetClientListening, nullptr);
 static KHook::Virtual<IVEngineServer2, bool, CPlayerSlot, CPlayerSlot, bool> g_Hook_OnSetClientListeningPost(&IVEngineServer2::SetClientListening, &g_Menus, nullptr, &Menus::OnSetClientListeningPost);
 static KHook::Virtual<IServerGameClients, void, CPlayerSlot, const CCommand&> g_Hook_ClientCommand(&IServerGameClients::ClientCommand, &g_Menus, &Menus::ClientCommand, nullptr);
@@ -1451,7 +1451,7 @@ KHook::Return<void> Menus::OnServerConVarChanged(IServerGameDLL* pThis, const ch
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Menus::OnPostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType)
+KHook::Return<void> Menus::OnPostEventAbstract(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	g_pUtilsApi->SendServerPostEvent(nClientCount, clients, pEvent, pData);
 	return {KHook::Action::Ignore};
@@ -1519,7 +1519,7 @@ KHook::Return<void> Menus::OnServerConVarChangedPost(IServerGameDLL* pThis, cons
 	return {KHook::Action::Ignore};
 }
 
-KHook::Return<void> Menus::OnPostEventAbstractPost(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType)
+KHook::Return<void> Menus::OnPostEventAbstractPost(IGameEventSystem* pThis, CSplitScreenSlot nSlot, bool bLocalOnly, int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData, unsigned long nSize, NetChannelBufType_t bufType)
 {
 	g_pUtilsApi->SendServerPostEventPost(nClientCount, clients, pEvent, pData);
 	return {KHook::Action::Ignore};

@@ -18,7 +18,7 @@ class CTakeDamageInfo;
 class CCSGameRules;
 class CTimer;
 struct Menu;
-class INetworkMessageInternal;
+struct NetMessageInfo_t;
 class CNetMessage;
 class CCommand;
 class CPlayer_ItemServices;
@@ -176,7 +176,7 @@ public:
     virtual void UpdateWhenNotInGame(float flFrameTime) { };
     virtual void ServerConVarChanged(const char *pVarName, const char *pValue) { };
     virtual bool SetClientListening(int iReceiver, int iSender, bool bListen) { return bListen; };
-    virtual void PostEvent(int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData) { };
+    virtual void PostEvent(int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData) { };
     virtual bool DispatchConCommand(int iSlot, const CCommand &args) { return true; };
     virtual void FireEvent(IGameEvent *pEvent, bool bDontBroadcast) { };
 
@@ -191,7 +191,7 @@ public:
     virtual void UpdateWhenNotInGamePost(float flFrameTime) { };
     virtual void ServerConVarChangedPost(const char *pVarName, const char *pValue) { };
     virtual void SetClientListeningPost(int iReceiver, int iSender, bool bListen) { };
-    virtual void PostEventPost(int nClientCount, const uint64 *clients, INetworkMessageInternal *pEvent, const CNetMessage *pData) { };
+    virtual void PostEventPost(int nClientCount, const uint64 *clients, NetMessageInfo_t *pEvent, const CNetMessage *pData) { };
     virtual void DispatchConCommandPost(int iSlot, const CCommand &args) { };
     virtual void FireEventPost(IGameEvent *pEvent, bool bDontBroadcast) { };
 };
