@@ -244,6 +244,9 @@ class MMSPluginConfig(object):
       elif cxx.family == 'clang':
         cxx.linkflags += ['-lgcc_eh']
       cxx.linkflags += ['-static-libstdc++']
+      # An object without a .note.GNU-stack section makes the linker mark the stack executable,
+      # and glibc 2.41 refuses to dlopen such a library
+      cxx.linkflags += ['-Wl,-z,noexecstack']
       # Drop unreferenced functions/data from the final .so
       cxx.cflags += ['-ffunction-sections', '-fdata-sections']
       cxx.linkflags += ['-Wl,--gc-sections']
